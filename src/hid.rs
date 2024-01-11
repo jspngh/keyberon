@@ -9,7 +9,7 @@ use usb_device::control;
 use usb_device::control::{Recipient, RequestType};
 use usb_device::descriptor::DescriptorWriter;
 use usb_device::endpoint::{EndpointAddress, EndpointIn};
-use usb_device::UsbError;
+use usb_device::{UsbError, LangID};
 
 const SPECIFICATION_RELEASE: u16 = 0x111;
 const INTERFACE_CLASS_HID: u8 = 0x03;
@@ -120,7 +120,11 @@ impl<B: UsbBus, D: HidDevice> HidClass<'_, B, D> {
         }
     }
 
-    pub fn new_with_polling_interval(device: D, alloc: &UsbBusAllocator<B>, interval: u8) -> HidClass<'_, B, D> {
+    pub fn new_with_polling_interval(
+        device: D,
+        alloc: &UsbBusAllocator<B>,
+        interval: u8,
+    ) -> HidClass<'_, B, D> {
         let max_packet_size = device.max_packet_size();
         HidClass {
             device,
@@ -219,7 +223,7 @@ impl<B: UsbBus, D: HidDevice> UsbClass<B> for HidClass<'_, B, D> {
         Ok(())
     }
 
-    fn get_string(&self, _index: StringIndex, _lang_id: u16) -> Option<&str> {
+    fn get_string(&self, _index: StringIndex, _lang_id: LangID) -> Option<&str> {
         None
     }
 
